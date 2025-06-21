@@ -1,0 +1,57 @@
+<!-- product.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Product Details</title>
+  <script src="products.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const params = new URLSearchParams(window.location.search);
+      const productId = parseInt(params.get("id"));
+      const product = products.find(p => p.id === productId);
+      const container = document.getElementById("product-detail");
+      const relatedContainer = document.getElementById("related-products");
+
+      if (product) {
+        container.innerHTML = `
+          <img src="${product.image}" alt="${product.name}" />
+          <h1>${product.name}</h1>
+          <p>${product.description}</p>
+          <a href="${product.link}" target="_blank"><button>Buy Now</button></a>
+        `;
+
+        const related = products.filter(p => p.id !== productId).slice(0, 4);
+        related.forEach(rel => {
+          const div = document.createElement("div");
+          div.className = "product";
+          div.innerHTML = `
+            <img src="${rel.image}" alt="${rel.name}" />
+            <h3>${rel.name}</h3>
+            <a href="product.html?id=${rel.id}"><button>View</button></a>
+          `;
+          relatedContainer.appendChild(div);
+        });
+      } else {
+        container.innerHTML = "<p>Product not found.</p>";
+      }
+    });
+  </script>
+  <style>
+    body { font-family: Arial; background: #f4f4f4; margin: 0; padding: 20px; }
+    #product-detail { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-bottom: 40px; text-align: center; }
+    #product-detail img { width: 300px; border-radius: 8px; }
+    button { margin-top: 10px; background: #ff6600; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 5px; }
+    h1 { margin: 10px 0; }
+    #related-products { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+    .product { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; }
+    .product img { width: 100%; border-radius: 6px; }
+  </style>
+</head>
+<body>
+  <div id="product-detail"></div>
+  <h2>Related Products</h2>
+  <div id="related-products"></div>
+</body>
+</html>
